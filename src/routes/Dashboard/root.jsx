@@ -54,7 +54,8 @@ export default function AppRoot(){
         if(userMeter){
           navigator("/dashboard")
         }else{
-          navigator("/dashboard/add-meter");
+          // navigator("/dashboard/add-meter");
+          navigator("/dashboard");
         }
 
   

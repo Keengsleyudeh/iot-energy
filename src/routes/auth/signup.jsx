@@ -16,7 +16,7 @@ import {
   } from '@chakra-ui/react';
   import React, { useState } from 'react';
 import {getAuth, createUserWithEmailAndPassword} from "firebase/auth"
-import { createUser } from '../../Utils/Firebase';
+import { addMeterToUser, createUser, getFirstMeterId } from '../../Utils/Firebase';
 import { useNavigate } from 'react-router-dom';
   
   
@@ -40,7 +40,14 @@ import { useNavigate } from 'react-router-dom';
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const newUser = await createUser(fName, lName, userCredential.user.uid);
+        const meterId = await getFirstMeterId("Meter");
+        
         userCredential.user.displayName = fName;
+        
+        await addMeterToUser(meterId.id, userCredential.user.uid);
+        
+        console.log(meterId.id)
+
         navigator("/dashboard");
       } catch (err) {
         setError(err.message);

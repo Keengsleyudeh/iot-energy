@@ -13,11 +13,24 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  limit,
   query,
   setDoc,
   where,
 } from "firebase/firestore";
 import { redirect, useNavigate, useNavigation } from "react-router-dom";
+
+
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB2-Lwx2RK3Y3OSzBplEERttWvroADkIPU",
+  authDomain: "highcut-a9c51.firebaseapp.com",
+  projectId: "highcut-a9c51",
+  storageBucket: "highcut-a9c51.firebasestorage.app",
+  messagingSenderId: "791586832438",
+  appId: "1:791586832438:web:c5e6d85b903e1fa37c1897",
+  measurementId: "G-586KD2F41J"
+};
 
 
 // Initialize Firebase
@@ -30,6 +43,7 @@ const db = getFirestore(app);
 export async function getActivationCodeInfo(code) {
   return (await getDoc(doc(db, "MeterActivationCode", code))).data();
 }
+
 
 export async function addMeterToUser(meter_id, u_id) {
   return addDoc(collection(db, "User", `${u_id}/UserMeter`), {
@@ -44,12 +58,13 @@ export async function deleteActivationCode(code) {
 export async function createUser(first_name, last_name, auth_id) {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      setDoc(doc(db, "User", auth_id), {
+      await setDoc(doc(db, "User", auth_id), {
         age: null,
         first_name,
         last_name,
         permanent_address: null,
         phone: null,
+        user_id: auth_id,
       });
 
       return true;
@@ -65,10 +80,7 @@ export async function getUserMeterStatus(user) {
   if (querySnapshot.size > 0) {
     hasMeter = true;
   }
-  // querySnapshot.forEach((doc) => {
-  //   console.log(doc.data());
-  // })
-
+ 
   return hasMeter;
 }
 
@@ -77,7 +89,8 @@ export async function getUserMeter(uid) {
   const querySnapshot = await getDocs(docRef);
 
   if (querySnapshot.empty) {
-    retll;
+    // retll;
+    return;
   } else {
     const meter_info = await getDoc(
       doc(db, "Meter", querySnapshot.docs.at(0).data().meter_id)
@@ -97,6 +110,29 @@ export async function getUserMeterReadingCollectionRef(uid) {
   );
 
   return meter_reading_ref;
+}
+
+
+export async function getFirstMeterId(collectionPath) {
+  try {
+    const collectionRef = collection(db, collectionPath);
+    const q = query(collectionRef, limit(1));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      return null;
+    }
+
+    const firstDoc = querySnapshot.docs[0];
+    return {
+      id: firstDoc.id,
+      ...firstDoc.data()
+    };
+
+  } catch (error) {
+    console.error("Error getting first document:", error);
+    throw error;
+  }
 }
 
 export async function getConfig() {
