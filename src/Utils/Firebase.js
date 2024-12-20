@@ -23,13 +23,13 @@ import { redirect, useNavigate, useNavigation } from "react-router-dom";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyB2-Lwx2RK3Y3OSzBplEERttWvroADkIPU",
-  authDomain: "highcut-a9c51.firebaseapp.com",
-  projectId: "highcut-a9c51",
-  storageBucket: "highcut-a9c51.firebasestorage.app",
-  messagingSenderId: "791586832438",
-  appId: "1:791586832438:web:c5e6d85b903e1fa37c1897",
-  measurementId: "G-586KD2F41J"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 
@@ -38,7 +38,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 const auth = getAuth();
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 export async function getActivationCodeInfo(code) {
   return (await getDoc(doc(db, "MeterActivationCode", code))).data();

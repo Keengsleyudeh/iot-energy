@@ -10,7 +10,10 @@ function DataDisplay({ data }) {
 
   if (data) {
     return(
-    <Box width={"100%"}>
+    <Box width={"100%"} fontSize={["sm", "md"]} 
+    color="gray.600" 
+    fontWeight="medium"
+    fontFamily="Comfortaa, sans-serif">
         <Container
             rounded="lg"
             boxShadow="md"
@@ -53,7 +56,7 @@ function DataDisplay({ data }) {
           maxW={"80%"}
           p={"20px"}
           display={"flex"}
-          alignItems={{ base: "flex-start", md: "center" }}
+          alignItems={{ base: "center", md: "center" }}
           justifyContent="space-between"
           flexDirection={"column"}
           gap={"20px"}
@@ -64,7 +67,9 @@ function DataDisplay({ data }) {
             marginBottom={"20px"}
             lineHeight={1.2}
             fontWeight="bold"
-          >
+            color="gray.600" 
+            fontFamily="Comfortaa, sans-serif"
+                >
             Ops Nothing to show here!
           </Heading>
         </Container>

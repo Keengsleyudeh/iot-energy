@@ -74,7 +74,14 @@ export default function AppRoot(){
         py={4}
         shadow="md"
       >
-        <Flex alignItems="center" justifyContent="space-between" mx="auto">
+        <Flex 
+          alignItems="center" 
+          justifyContent="space-between" mx="auto" 
+          fontSize={["sm", "md"]} 
+          color="gray.600" 
+          fontWeight="medium"
+          fontFamily="Comfortaa, sans-serif"
+        >
           <HStack display="flex" spacing={3} alignItems="center">
             <Box display={{ base: "inline-flex", md: "none" }}>
               <IconButton
@@ -141,7 +148,7 @@ export default function AppRoot(){
             </chakra.a>
 
             <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
-              <Button variant="ghost" leftIcon={<AiFillHome />} size="sm">
+              <Button variant="ghost" leftIcon={<AiFillHome />} size="sm" >
                 Dashboard
               </Button>
             </HStack>

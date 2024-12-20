@@ -1,9 +1,6 @@
 // theme.js
-
-// 1. import `extendTheme` function
 import { extendTheme } from '@chakra-ui/react'
 
-// 2. Add your color mode config
 const config = {
   initialColorMode: 'light',
   useSystemColorMode: true,
@@ -24,7 +21,54 @@ const colors = {
   }
 };
 
-// 3. extend the theme
-const theme = extendTheme({ config, colors })
+// Add fonts configuration
+const fonts = {
+  heading: `'Comfortaa', sans-serif`,
+  body: `'Nunito', sans-serif`,
+};
 
-export default theme
+// Extended theme with new component styles and fonts
+const theme = extendTheme({
+  config,
+  colors,
+  fonts, // Add fonts to theme
+  styles: {
+    global: {
+      body: {
+        bg: "gray.50",
+        fontFamily: 'Nunito, sans-serif',
+      },
+    },
+  },
+  components: {
+    Stat: {
+      baseStyle: {
+        container: {
+          borderRadius: "xl",
+          transition: "all 0.3s ease",
+        },
+      },
+    },
+    Heading: {
+      baseStyle: {
+        fontFamily: 'Comfortaa, sans-serif',
+      },
+    },
+    components: {
+      Button: {
+        baseStyle: {
+          fontFamily: 'Comfortaa, sans-serif',
+        },
+      },
+      Input: {
+        baseStyle: {
+          field: {
+            fontFamily: 'Comfortaa, sans-serif',
+          },
+        },
+      },
+    },
+  },
+});
+
+export default theme;

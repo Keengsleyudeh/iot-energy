@@ -7,7 +7,10 @@ const Banner = ({handleShowData, chartIsLoading}) => {
 
 
   return (
-    <Box width={"100%"}>
+    <Box width={"100%"} fontSize={["sm", "md"]} 
+        color="gray.600" 
+        fontWeight="medium"
+        fontFamily="Comfortaa, sans-serif">
         <Stack
         direction={{ base: 'column', md: 'row' }}
         spacing={5}

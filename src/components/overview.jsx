@@ -40,7 +40,10 @@ const overviewList = [
 ];
 const OverviewSection = () => {
   return (
-    <Container maxW="6xl" py={10} mt={"100px"}>
+    <Container maxW="6xl" py={10} mt={"100px"} fontSize={["sm", "md"]} 
+    color="gray.600" 
+    fontWeight="medium"
+    fontFamily="Comfortaa, sans-serif">
       <chakra.h2 fontSize="4xl" fontWeight="bold" textAlign="center" mb={10}>
         How to manage your energy usage
       </chakra.h2>
