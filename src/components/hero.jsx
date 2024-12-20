@@ -131,7 +131,7 @@ const Hero = ({displayName}) => {
                 bgGradient="linear(to-l, blue.500, cyan.400)"
                 bgClip="text"
               >
-                IoT-enabled monitoring system for photovoltaic systems.
+                IoT-Enabled Monitoring System for Photovoltaic Systems.
               </chakra.h1>
             </Flex>
 
@@ -143,7 +143,7 @@ const Hero = ({displayName}) => {
               fontFamily="Nunito, sans-serif"
               fontWeight="500"
             >
-              Students of Mechatronic Engineering, 2024.
+              Designed and Implemented by Mechatronics Engineering Students of Futo, Nigeria; December, 2024.
             </chakra.h2>
             <chakra.h2 
               color="gray.500" 
@@ -153,7 +153,7 @@ const Hero = ({displayName}) => {
               fontFamily="Nunito, sans-serif"
               fontWeight="500"
             >
-              Project Supervisor: Engr. Dr. E.S. Mbonu.
+              Supervisor: Engr. Dr. E.S. Mbonu.
             </chakra.h2>
           </Stack>
         </Box>
