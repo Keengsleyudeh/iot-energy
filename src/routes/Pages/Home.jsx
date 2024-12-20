@@ -595,7 +595,7 @@ const tariffChange = calculatePercentageChange(active_energy2*tariffRate, active
           <StatCard
             label="Active Energy"
             value={active_energy}
-            unit="W"
+            unit="W/hr"
             updateText="updated every 1min"
             change={active_energyChange}
           />

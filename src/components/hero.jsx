@@ -143,7 +143,7 @@ const Hero = ({displayName}) => {
               fontFamily="Nunito, sans-serif"
               fontWeight="500"
             >
-              Designed and Implemented by Mechatronics Engineering Students of Futo, Nigeria; December, 2024.
+              Designed and Implemented by Mechatronics Engineering Students of FUTO, Nigeria; December, 2024.
             </chakra.h2>
             <chakra.h2 
               color="gray.500" 
