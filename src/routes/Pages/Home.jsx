@@ -1,363 +1,16 @@
-// import { Box, Flex, SimpleGrid, Stack, Stat, StatArrow, StatHelpText, StatLabel, StatNumber, chakra, useRadio } from "@chakra-ui/react";
-// import { getAuth, onAuthStateChanged } from "firebase/auth";
-// import { useEffect, useState } from "react";
-// import { getUserMeter, getUserMeterReadingCollectionRef,getConfig, computeEnergyUsage, getSortedEnergyUsage, powerToEnergy, db } from "../../Utils/Firebase";
-// import { Timestamp, collection, doc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
-// import { thousandSeperator } from "../../Utils/Utils";
-// import Banner from "../../components/banner";
-// import OverviewSection from "../../components/overview";
-// import Hero from "../../components/hero";
-// import DataDisplay from "../../components/dataDisplay";
-
-// export default function Home({globalConfig}){
-//   const [user, setUser] = useState({});
-//   const [userMeter, setUserMeter] = useState(null);
-//   const [userMeterDateCreated, setUserMeterDateCreated] = useState("");
-//   const [latestEnergyUsage, setlatestEnergyUsage] = useState(0.00);
-//   const [datedEneryUsage, setdatedEneryUsage] = useState(null);
-//   const [tariff, setTariff] = useState(0.00);
-//   const tariffRate = 200;
-//   const auth = getAuth();
-
-//   //chart
-//   const [chartIsLoading, setChartIsLoading] = useState(false);
-
-//   useEffect(() => {
-//     onAuthStateChanged(auth, async (user) => {
-//       if(user){
-//         setUser(user);
-//         const userMeter = await getUserMeter(user.uid);
-
-//         if(userMeter){
-//           const userMeterCreated = userMeter.data().date_created;
-//           const ts = userMeterCreated * 1000;
-//           setUserMeter(userMeter);
-//           setUserMeterDateCreated(new Date(ts).toDateString());
-        
-
-//           const unsub = onSnapshot(await getUserMeterReadingCollectionRef(user.uid), (query_snapshot) => {
-//             if(!query_snapshot.empty){
-//               let latest_data = query_snapshot.docs.at(-1).data();
-//               computeEnergyUsage(getSortedEnergyUsage(null, userMeter.id), tariffRate)
-//               .then((finalSortedData) => {
-//                 console.log(finalSortedData, tariffRate);
-//                 setlatestEnergyUsage(Number(finalSortedData.totalEnergy).toFixed(2));
-//                 setTariff(Number(finalSortedData.totalTariff).toFixed(2));
-//               })
-//             }
-//           });          
-//         }
-
-//       }
-//     })
-//   }, [])
-
-//   const [data, setData] = useState([]);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       // Reference to the MeterReadings collection
-//       const readingsRef = collection(db, 'Meter', 'F2BdftS6GpAjEglZrzxf', 'MeterReadings');
-//       // Create a query to order by timestamp and limit to the most recent data
-//       const readingsQuery = query(readingsRef, orderBy('timestamp', 'desc'), limit(1));
-
-//       // Set up a real-time listener
-//       const unsubscribe = onSnapshot(readingsQuery, (snapshot) => {
-//         const readings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-//         setData(readings);
-//       });
-
-//       // Cleanup the listener on unmount
-//       return () => unsubscribe();
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   console.log(data);
-
-//   if (data.length===0) return;
-  
-
-//   const {
-//     active_energy,
-//     active_power,
-//     current,
-//     frequency,
-//     id,
-//     power_factor,s
-//     timestamp,
-//     voltage
-//   } = data[0];
-
-//   console.log(current, frequency, timestamp);
-
-//   async function handleShowData(date){
-//     setChartIsLoading(true);
-//     const energyUsageData = await computeEnergyUsage(getSortedEnergyUsage(date, userMeter.id), tariffRate);
-//     setdatedEneryUsage(energyUsageData);
-//     setChartIsLoading(false);
-//   }
-
-
-//   if (!active_energy) return <div>Loading...</div>
-
-//     return (
-//         <>
-
-
-//           <Hero displayName={user.displayName} />
-
-//           {/* Stats */}
-//           <Box
-//             width={"100%"}
-//           >
-//             <Flex
-//               m={"auto"}
-//               w={"80%"}
-//               p={"50px 0px"}
-//               justifyContent={"space-between"}
-//               alignItems={"center"}
-//               gap={"20px"}
-//             >
-
-// <Stat
-//                 boxShadow={"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"}
-//                 p={"4"}
-//                 borderRadius={"10px"}
-//                 gap={"20px"}
-//               >
-//                 <StatLabel fontSize={""}>Meter No</StatLabel>
-                
-//                 <Flex
-//                   alignItems={"flex-end"}
-//                   gap={"10px"}
-//                 >
-//                   <Box>
-//                     <StatNumber fontSize={"x-large"}>{userMeter ? userMeter.data().meter_no : "Meter"}</StatNumber>
-//                     <StatHelpText>{userMeterDateCreated}</StatHelpText>
-//                   </Box>
-                  
-
-//                   <StatHelpText>
-//                     <StatArrow type={"increase"} />
-//                     Activated
-//                   </StatHelpText>
-//                 </Flex>
-                
-//               </Stat>
-
-
-//               <Stat
-//                 boxShadow={"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"}
-//                 p={"4"}
-//                 borderRadius={"10px"}
-//                 gap={"20px"}
-//               >
-//                 <StatLabel fontSize={""}>Voltage</StatLabel>
-                
-//                 <Flex
-//                   alignItems={"flex-end"}
-//                   gap={"10px"}
-//                 >
-//                   <Box>
-//                     <StatNumber fontSize={"x-large"}>{voltage} V</StatNumber>
-//                     <StatHelpText>updated every 1min</StatHelpText>
-//                   </Box>
-                  
-
-//                   <StatHelpText>
-//                     <StatArrow type={"decrease"} />
-//                     23.36%
-//                   </StatHelpText>
-//                 </Flex>
-                
-//               </Stat>
-
-
-//               <Stat
-//                 boxShadow={"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"}
-//                 p={"4"}
-//                 borderRadius={"10px"}
-//                 gap={"20px"}
-//               >
-//                 <StatLabel fontSize={""}>Current</StatLabel>
-                
-//                 <Flex
-//                   alignItems={"flex-end"}
-//                   gap={"10px"}
-//                 >
-//                   <Box>
-//                     <StatNumber fontSize={"x-large"}>{current} A</StatNumber>
-//                     <StatHelpText>updated every 1min</StatHelpText>
-//                   </Box>
-                  
-
-//                   <StatHelpText>
-//                     <StatArrow type={"decrease"} />
-//                     23.36%
-//                   </StatHelpText>
-//                 </Flex>
-                
-//               </Stat>
-
-
-//               <Stat
-//                 boxShadow={"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"}
-//                 p={"4"}
-//                 borderRadius={"10px"}
-//                 gap={"20px"}
-//               >
-//                 <StatLabel fontSize={""}>Active Power</StatLabel>
-                
-//                 <Flex
-//                   alignItems={"flex-end"}
-//                   gap={"10px"}
-//                 >
-//                   <Box>
-//                     <StatNumber fontSize={"x-large"}>{active_power} W</StatNumber>
-//                     <StatHelpText>updated every 1min</StatHelpText>
-//                   </Box>
-                  
-
-//                   <StatHelpText>
-//                     <StatArrow type={"decrease"} />
-//                     23.36%
-//                   </StatHelpText>
-//                 </Flex>
-                
-//               </Stat>
-
-
-//               <Stat
-//                 boxShadow={"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"}
-//                 p={"4"}
-//                 borderRadius={"10px"}
-//                 gap={"20px"}
-//               >
-//                 <StatLabel fontSize={""}>Active Energy</StatLabel>
-                
-//                 <Flex
-//                   alignItems={"flex-end"}
-//                   gap={"10px"}
-//                 >
-//                   <Box>
-//                     <StatNumber fontSize={"x-large"}>{active_energy} W</StatNumber>
-//                     <StatHelpText>updated every 1min</StatHelpText>
-//                   </Box>
-                  
-
-//                   <StatHelpText>
-//                     <StatArrow type={"decrease"} />
-//                     23.36%
-//                   </StatHelpText>
-//                 </Flex>
-                
-//               </Stat>
-
-
-//               <Stat
-//                 boxShadow={"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"}
-//                 p={"4"}
-//                 borderRadius={"10px"}
-//                 gap={"20px"}
-//               >
-//                 <StatLabel fontSize={""}>Frequency</StatLabel>
-                
-//                 <Flex
-//                   alignItems={"flex-end"}
-//                   gap={"10px"}
-//                 >
-//                   <Box>
-//                     <StatNumber fontSize={"x-large"}>{frequency}Hz</StatNumber>
-//                     <StatHelpText>updated every 1min</StatHelpText>
-//                   </Box>
-                  
-
-//                   <StatHelpText>
-//                     <StatArrow type={"decrease"} />
-//                     23.36%
-//                   </StatHelpText>
-//                 </Flex>
-                
-//               </Stat>
-
-
-//               <Stat
-//                 boxShadow={"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"}
-//                 p={"4"}
-//                 borderRadius={"10px"}
-//                 gap={"20px"}
-//               >
-//                 <StatLabel fontSize={""}>Power Factor</StatLabel>
-                
-//                 <Flex
-//                   alignItems={"flex-end"}
-//                   gap={"10px"}
-//                 >
-//                   <Box>
-//                     <StatNumber fontSize={"x-large"}>{power_factor}</StatNumber>
-//                     <StatHelpText>updated every 1min</StatHelpText>
-//                   </Box>
-                  
-
-//                   <StatHelpText>
-//                     <StatArrow type={"decrease"} />
-//                     23.36%
-//                   </StatHelpText>
-//                 </Flex>
-                
-//               </Stat>
-
-
-//               <Stat
-//                 boxShadow={"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"}
-//                 p={"4"}
-//                 borderRadius={"10px"}
-//                 gap={"20px"}
-//               >
-//                 <StatLabel fontSize={""}>Tariff</StatLabel>
-                
-//                 <Flex
-//                   alignItems={"flex-end"}
-//                   gap={"10px"}
-//                 >
-//                   <Box>
-//                     <StatNumber fontSize={"x-large"}>₦ {active_energy * tariffRate}</StatNumber>
-//                     <StatHelpText>Updated every 1min</StatHelpText>
-//                   </Box>
-                  
-
-//                   <StatHelpText>
-//                     <StatArrow type={"decrease"} />
-//                     23.36%
-//                   </StatHelpText>
-//                 </Flex>       
-//               </Stat>          
-//             </Flex>
-//           </Box>
-          
-
-//           <Banner handleShowData={handleShowData} chartIsLoading={chartIsLoading}/>
-//           <DataDisplay data={datedEneryUsage}/>
-//           <OverviewSection />
-//         </>
-//     )
-// }
-
-
 
 import { Box, Flex, SimpleGrid, Stack, Stat, StatArrow, StatHelpText, StatLabel, StatNumber, chakra, useRadio } from "@chakra-ui/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { getUserMeter, getUserMeterReadingCollectionRef, getConfig, computeEnergyUsage, getSortedEnergyUsage, powerToEnergy, db } from "../../Utils/Firebase";
-import { Timestamp, collection, doc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import { Timestamp, collection, doc, limit, onSnapshot, orderBy, query, getDocs } from "firebase/firestore";
 import { thousandSeperator } from "../../Utils/Utils";
 import Banner from "../../components/banner";
 import OverviewSection from "../../components/overview";
 import Hero from "../../components/hero";
 import DataDisplay from "../../components/dataDisplay";
 import "../../index";
+import { EnergyLineGraph } from "../../components/EnergyLineGraph";
 
 export default function Home({ globalConfig }) {
   const [user, setUser] = useState({});
@@ -371,6 +24,7 @@ export default function Home({ globalConfig }) {
 
   //chart
   const [chartIsLoading, setChartIsLoading] = useState(false);
+  
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -404,45 +58,83 @@ export default function Home({ globalConfig }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const readingsRef = collection(db, 'Meter', 'F2BdftS6GpAjEglZrzxf', 'MeterReadings');
-      const readingsQuery = query(readingsRef, orderBy('timestamp', 'desc'), limit(2));
-
-      const unsubscribe = onSnapshot(readingsQuery, (snapshot) => {
-        const readings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setData(readings);
+      const metersRef = collection(db, 'Meter');
+      
+      const unsubscribe = onSnapshot(metersRef, async (meterSnapshot) => {
+        try {
+          const allMetersReadings = [];
+          
+          // Process meters sequentially to ensure no readings are missed
+          for (const meterDoc of meterSnapshot.docs) {
+            const readingsRef = collection(db, 'Meter', meterDoc.id, 'MeterReadings');
+            const readingsQuery = query(
+              readingsRef, 
+              orderBy(`${meterDoc.id==="F2BdftS6GpAjEglZrzxf"? 'timestamp': 'uploadedAt'}`, 'desc'), 
+              limit(15)
+            );
+            
+            const readingsSnapshot = await getDocs(readingsQuery);
+            
+            if (!readingsSnapshot.empty) {
+              const meterReadings = readingsSnapshot.docs.map(doc => ({
+                id: doc.id,
+                meterId: meterDoc.id,
+                ...doc.data()
+              }));
+              
+              allMetersReadings.push(meterReadings);
+            }
+          }
+          
+          console.log('Total meters with readings:', allMetersReadings.length);
+          setData(allMetersReadings);
+          
+        } catch (error) {
+          console.error('Error fetching meter readings:', error);
+        }
       });
-
+  
       return () => unsubscribe();
     };
-
+  
     fetchData();
   }, []);
 
+  console.log(data);
   if (data.length === 0) return null;
 
-  console.log(data);
 
   const {
-    active_energy,
-    active_power,
-    current,
-    frequency,
-    power_factor,
-    timestamp,
-    voltage
-  } = data[0];
+    active_energy: regionOneEnergy,
+  } = data[0][0];
 
   const {
-    active_energy: active_energy2,
-    active_power: active_power2,
-    current: current2,
-    frequency: frequency2,
-    power_factor: power_factor2,
-    timestamp: timestamp2,
-    voltage: voltage2
-  } = data[1];
+    active_energy: regionOneEnergy2,
+  } = data[0][1];
 
-  console.log(voltage2);
+  const {
+    energy: regionTwoEnergy,
+  } = data[1][0];
+
+  const {
+    energy: regionTwoEnergy2,
+  } = data[1][1];
+
+  const {
+    energy: regionThreeEnergy,
+  } = data[2][0];
+
+  const {
+    energy: regionThreeEnergy2,
+  } = data[2][1];
+
+  const {
+    energy: regionFourEnergy,
+  } = data[3][0];
+
+  const {
+    energy: regionFourEnergy2,
+  } = data[3][1];
 
   function calculatePercentageChange(oldValue, newValue) {
     // Input validation
@@ -470,13 +162,10 @@ export default function Home({ globalConfig }) {
 }
 
 
-const voltageChange = calculatePercentageChange(voltage2, voltage);
-const currentChange = calculatePercentageChange(current2, current);
-const active_powerChange = calculatePercentageChange(active_power2, active_power);
-const active_energyChange = calculatePercentageChange(active_energy2, active_energy);
-const frequencyChange = calculatePercentageChange(frequency2, frequency);
-const power_factorChange = calculatePercentageChange(power_factor2, power_factor);
-const tariffChange = calculatePercentageChange(active_energy2*tariffRate, active_energy*tariffRate);
+const regionOneChange = calculatePercentageChange(regionOneEnergy2, regionOneEnergy);
+const regionTwoChange = calculatePercentageChange(regionTwoEnergy2, regionTwoEnergy);
+const regionThreeChange = calculatePercentageChange(regionThreeEnergy2, regionThreeEnergy);
+const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFourEnergy);
 
   async function handleShowData(date) {
     setChartIsLoading(true);
@@ -562,70 +251,50 @@ const tariffChange = calculatePercentageChange(active_energy2*tariffRate, active
           mx="auto"
           maxW="1440px"
         >
-          <StatCard
-            label="Meter No"
-            value={"Meter-01"}
-            updateText={"20th Dec, 2024"}
-          />
 
           <StatCard
-            label="Voltage"
-            value={voltage}
-            unit="V"
-            updateText="updated every 1min"
-            change={voltageChange}
-          />
-
-          <StatCard
-            label="Current"
-            value={current}
-            unit="A"
-            updateText="updated every 1min"
-            change={currentChange}
-          />
-
-          <StatCard
-            label="Active Power"
-            value={active_power}
+            label="Region 1"
+            value={Math.round(regionOneEnergy * 100) / 100}
             unit="W"
             updateText="updated every 1min"
-            change={active_powerChange}
+            change={regionOneChange}
           />
 
           <StatCard
-            label="Active Energy"
-            value={active_energy}
-            unit="W/hr"
+            label="Region 2"
+            value={Math.round(regionTwoEnergy * 100) / 100}
+            unit="W"
             updateText="updated every 1min"
-            change={active_energyChange}
+            change={regionTwoChange}
           />
 
           <StatCard
-            label="Frequency"
-            value={frequency}
-            unit="Hz"
+            label="Region 3"
+            value={Math.round(regionThreeEnergy * 100) / 100}
+            unit="W"
             updateText="updated every 1min"
-            change={frequencyChange}
+            change={regionThreeChange}
           />
 
           <StatCard
-            label="Power Factor"
-            value={power_factor}
+            label="Region 4"
+            value={Math.round(regionFourEnergy * 100) / 100}
+            unit="W"
             updateText="updated every 1min"
-            change={power_factorChange}
+            change={regionFourChange}
           />
 
-          <StatCard
-            label="Tariff"
-            value={`₦ ${(active_energy * tariffRate).toLocaleString()}`}
-            // value={`₦ ${(tariff).toLocaleString()}`}
-            updateText="Updated every 1min"
-            change={tariffChange}
-          />
         </SimpleGrid>
       </Box>
 
       {/* Data Visualization Section */}
+      <Box
+        width="full"
+        px={[4, 6, 8]}
+        py={[8, 12]}
+      >
+        <EnergyLineGraph data={data} />
+      </Box>
       <Box
         px={[4, 6, 8]}
         pb={8}
