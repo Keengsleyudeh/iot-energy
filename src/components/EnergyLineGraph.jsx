@@ -31,7 +31,7 @@ import {
         };
       });
   
-      return chartData;
+      return chartData.reverse();
     };
   
     const chartData = transformDataForChart();

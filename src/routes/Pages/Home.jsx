@@ -17,7 +17,7 @@ export default function Home({ globalConfig }) {
   const [userMeter, setUserMeter] = useState(null);
   const [userMeterDateCreated, setUserMeterDateCreated] = useState("");
   const [latestEnergyUsage, setlatestEnergyUsage] = useState(0.00);
-  const [datedEneryUsage, setdatedEneryUsage] = useState(null);
+  const [datedEneryUsage, setdatedEneryUsage] = useState();
   const [tariff, setTariff] = useState(0.00);
   const tariffRate = 200;
   const auth = getAuth();
@@ -98,7 +98,7 @@ export default function Home({ globalConfig }) {
     };
   
     fetchData();
-  }, []);
+  }, [data[0], data[1], data[2], data[4]]);
 
   console.log(data);
   if (data.length === 0) return null;

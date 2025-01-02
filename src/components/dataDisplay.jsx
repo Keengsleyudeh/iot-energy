@@ -8,6 +8,8 @@ function DataDisplay({ data }) {
     return value + " kwh"
   }
 
+  console.log(data, "Mee")
+
   if (data) {
     return(
     <Box width={"100%"} fontSize={["sm", "md"]} 

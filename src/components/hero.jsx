@@ -16,7 +16,7 @@ const Hero = ({displayName}) => {
     <Box pb={[4, 6, 8]}>
       <Stack
         pos="relative"
-        bgGradient={`linear(to-l, blue.500, blue.400 , cyan.400)`}
+        bgGradient={`linear(to-l, purple.600, indigo.500, violet.400)`}
         height={["200px", "250px", "300px"]}
         w="100%"
         transition="all 0.3s ease"
@@ -87,7 +87,8 @@ const Hero = ({displayName}) => {
                 bgGradient="linear(to-l, blue.500, cyan.400)"
                 bgClip="text"
               >
-                Energy monitoring system
+                IoT Model for Exact Characterisation and Monitoring of Energy
+                Consumption in a Heterogeneous Hybrid Environment.
               </chakra.h1>
             </Flex>
 
@@ -99,9 +100,9 @@ const Hero = ({displayName}) => {
               fontFamily="Nunito, sans-serif"
               fontWeight="500"
             >
-              Designed and Implemented by -------------, Nigeria; December, 2024.
+              Designed and Implemented by Eke, Rosaline Ashinedu Henry; January, 2025.
             </chakra.h2>
-            {/* <chakra.h2 
+            <chakra.h2 
               color="gray.500" 
               fontSize={["lg", "xl"]} 
               maxW="600px" 
@@ -109,8 +110,8 @@ const Hero = ({displayName}) => {
               fontFamily="Nunito, sans-serif"
               fontWeight="500"
             >
-              Supervisor: Engr. Dr. E.S. Mbonu.
-            </chakra.h2> */}
+              School: University of Port Harcourt,  Center for Information and Telecommunication Engineering
+            </chakra.h2>
           </Stack>
         </Box>
       </Box>
