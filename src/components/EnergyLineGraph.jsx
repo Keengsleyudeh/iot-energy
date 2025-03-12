@@ -12,6 +12,8 @@ import {
   
   // Add this component to your existing code
   export const EnergyLineGraph = ({ data }) => {
+
+    console.log(data)
     // Transform the data for the chart
     const transformDataForChart = () => {
       if (!data || data.length === 0) return [];
@@ -19,12 +21,7 @@ import {
       // Get all readings for each region
       const chartData = data[0].map((_, index) => {
         return {
-          // Use timestamp from region 1 as the time reference
-          // timestamp: data[0][index]?.timestamp?.toDate().toLocaleString() || 
-          //           data[0][index]?.uploadedAt?.toDate().toLocaleString(),
-          // Region 1 uses active_energy
           Region1: Number(data[0][index]?.active_energy || 0).toFixed(2),
-          // Other regions use energy
           Region2: Number(data[1][index]?.energy || 0).toFixed(2),
           Region3: Number(data[2][index]?.energy || 0).toFixed(2),
           Region4: Number(data[3][index]?.energy || 0).toFixed(2)
@@ -42,7 +39,7 @@ import {
         p={4} 
         borderRadius="xl" 
         boxShadow="0px 4px 20px rgba(0, 0, 0, 0.05)"
-        height="400px"
+        height="430px"
       >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
@@ -65,7 +62,7 @@ import {
             <YAxis
               tick={{ fontSize: 12 }}
               label={{
-                value: 'Energy (W)',
+                value: 'Energy (kWh)',
                 angle: -90,
                 position: 'insideLeft',
                 style: { textAnchor: 'middle' }
@@ -77,7 +74,7 @@ import {
                 border: '1px solid #ccc',
                 borderRadius: '4px'
               }}
-              formatter={(value) => [`${value} W`, `Energy`]}
+              formatter={(value) => [`${value} kWh`, `Energy`]}
             />
             <Legend wrapperStyle={{ paddingTop: '10px' }} />
             <Line
@@ -107,6 +104,7 @@ import {
               activeDot={{ r: 6 }}
               name="Region 3"
             />
+
             <Line
               type="monotone"
               dataKey="Region4"
@@ -121,9 +119,5 @@ import {
       </Box>
     );
   };
-  
-  // In your main component, add the graph component:
-  // Add this inside your return statement where you want the graph to appear
-  // For example, after your SimpleGrid of StatCards:
   
  

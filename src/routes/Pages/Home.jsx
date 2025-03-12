@@ -1,10 +1,9 @@
 
-import { Box, Flex, SimpleGrid, Stack, Stat, StatArrow, StatHelpText, StatLabel, StatNumber, chakra, useRadio } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Stack, Stat, StatArrow, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { getUserMeter, getUserMeterReadingCollectionRef, getConfig, computeEnergyUsage, getSortedEnergyUsage, powerToEnergy, db } from "../../Utils/Firebase";
-import { Timestamp, collection, doc, limit, onSnapshot, orderBy, query, getDocs } from "firebase/firestore";
-import { thousandSeperator } from "../../Utils/Utils";
+import {  collection, limit, onSnapshot, orderBy, query, getDocs } from "firebase/firestore";
 import Banner from "../../components/banner";
 import OverviewSection from "../../components/overview";
 import Hero from "../../components/hero";
@@ -25,7 +24,7 @@ export default function Home({ globalConfig }) {
   //chart
   const [chartIsLoading, setChartIsLoading] = useState(false);
   
-
+  //For authentication
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -70,7 +69,7 @@ export default function Home({ globalConfig }) {
             const readingsQuery = query(
               readingsRef, 
               orderBy(`${meterDoc.id==="F2BdftS6GpAjEglZrzxf"? 'timestamp': 'uploadedAt'}`, 'desc'), 
-              limit(15)
+              limit(30)
             );
             
             const readingsSnapshot = await getDocs(readingsQuery);
@@ -93,16 +92,13 @@ export default function Home({ globalConfig }) {
           console.error('Error fetching meter readings:', error);
         }
       });
-  
       return () => unsubscribe();
     };
   
     fetchData();
-  }, [data[0], data[1], data[2], data[4]]);
+  }, [data?.[0]?.[0].energy]);
 
-  console.log(data);
   if (data.length === 0) return null;
-
 
   const {
     active_energy: regionOneEnergy,
@@ -135,6 +131,8 @@ export default function Home({ globalConfig }) {
   const {
     energy: regionFourEnergy2,
   } = data[3][1];
+
+
 
   function calculatePercentageChange(oldValue, newValue) {
     // Input validation
@@ -174,7 +172,7 @@ const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFour
     setChartIsLoading(false);
   }
 
-  const StatCard = ({ label, value, unit = "", updateText, change }) => (
+  const StatCard = ({ label, value, updateText, change }) => (
     <Stat
       p={["4", "6"]}
       borderRadius="xl"
@@ -189,13 +187,13 @@ const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFour
       color="gray.600" 
       fontWeight="medium"
       fontFamily="Comfortaa, sans-serif"
+      // maxWidth={"300px"}
     >
       <StatLabel
         fontSize={["sm", "md"]}
         color="gray.600"
         fontWeight="500"
         mb={2}
-        // fontFamily="Comfortaa, sans-serif"
       >
         {label}
       </StatLabel>
@@ -210,7 +208,7 @@ const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFour
             fontWeight="700"
             color="gray.800"
           >
-            {value} {unit}
+            {value} kWh
           </StatNumber>
           <StatHelpText
             fontSize={["xs", "sm"]}
@@ -251,11 +249,9 @@ const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFour
           mx="auto"
           maxW="1440px"
         >
-
           <StatCard
             label="Region 1"
             value={Math.round(regionOneEnergy * 100) / 100}
-            unit="W"
             updateText="updated every 1min"
             change={regionOneChange}
           />
@@ -263,7 +259,6 @@ const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFour
           <StatCard
             label="Region 2"
             value={Math.round(regionTwoEnergy * 100) / 100}
-            unit="W"
             updateText="updated every 1min"
             change={regionTwoChange}
           />
@@ -271,7 +266,6 @@ const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFour
           <StatCard
             label="Region 3"
             value={Math.round(regionThreeEnergy * 100) / 100}
-            unit="W"
             updateText="updated every 1min"
             change={regionThreeChange}
           />
@@ -279,7 +273,6 @@ const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFour
           <StatCard
             label="Region 4"
             value={Math.round(regionFourEnergy * 100) / 100}
-            unit="W"
             updateText="updated every 1min"
             change={regionFourChange}
           />
@@ -301,13 +294,6 @@ const regionFourChange = calculatePercentageChange(regionFourEnergy2, regionFour
         maxW="1440px"
         mx="auto"
       >
-        <Banner
-          handleShowData={handleShowData}
-          chartIsLoading={chartIsLoading}
-        />
-        <Box mt={8}>
-          <DataDisplay data={datedEneryUsage} />
-        </Box>
         <Box mt={8}>
           <OverviewSection />
         </Box>
